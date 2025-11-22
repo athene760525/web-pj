@@ -44,7 +44,7 @@ if ($me) {
                     </li>
 
                     
-            <!-- ✅ 新增這個：個人資料 / 修改密碼 -->
+            <!-- 新增這個：個人資料 / 修改密碼 -->
             <li class="nav-item">
             <a class="nav-link" href="<?= BASE_URL ?>/profile.php">
                 資料修改 </a>
