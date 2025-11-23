@@ -1,9 +1,30 @@
 <?php
 //用於處理使用者認證相關的功能
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/functions.php';
 
+/**
+ * 取得目前登入者（從 session）
+ */
+//function current_user() {
+//    return $_SESSION['user'] ?? null;
+//}
+
+/**
+ * 判斷是否為「管理員」或「舍監」
+ */
+function is_manager(): bool {
+    $u = current_user();
+    if (!$u) return false;
+
+    return ($u['identity'] === '管理員' || $u['identity'] === '舍監');
+}
 
 /**
  * 確保已登入，否則導向 login.php
@@ -36,7 +57,7 @@ function login(string $account, string $password): bool {
     $stmt->bind_param('s', $account);
     $stmt->execute();
     $result = $stmt->get_result();
-    $user = $result->fetch_assoc();  // 單數 user
+    $user = $result->fetch_assoc();
     $stmt->close();
 
     /* 帳號不存在 */
