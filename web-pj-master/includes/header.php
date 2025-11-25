@@ -1,4 +1,4 @@
- <?php
+<?php
 // includes/header.php
 ?>
 <body class="bg-light">

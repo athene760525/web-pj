@@ -1,8 +1,7 @@
 /* 全站基本設定 */
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background-color: #f5f5f7;
-    color: #222;
+    background-color: #f8f8f8; 
+    color: #1a237e; 
     margin: 0;
 }
 
@@ -12,7 +11,7 @@ body {
 
 /* 導覽列 */
 .site-nav {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); 
 }
 
 .nav-brand-text {
@@ -26,24 +25,25 @@ body {
 }
 
 .nav-link-main:hover {
-    color: #0d6efd !important;
+    color: #ff7f50 !important;
 }
 
 .nav-link-accent {
     border-radius: 20px;
-    border: 1px solid #0d6efd;
+    border: 1px solid #ff7f50; 
     margin-left: 0.5rem;
 }
 
 .nav-link-accent:hover {
-    background-color: #0d6efd;
+    background-color: #ff7f50; 
     color: #fff !important;
 }
 
 /* Hero 區塊 */
 .hero {
     padding: 60px 0;
-    background: linear-gradient(135deg, #eef3ff, #f7fbff);
+    /* 漸層背景 */
+    background: linear-gradient(135deg, #fff3e0, #f8f8f8);
 }
 
 .hero-inner {
@@ -67,7 +67,7 @@ body {
 
 .hero-subtitle {
     font-size: 1rem;
-    color: #555;
+    color: #5d667c; 
     margin-bottom: 20px;
 }
 
@@ -87,7 +87,7 @@ body {
     background-color: #ffffff;
     border-radius: 16px;
     padding: 20px 22px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 30px rgba(26, 35, 126, 0.12); 
     width: 100%;
 }
 
@@ -107,7 +107,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding-block: 6px;
-    border-bottom: 1px dashed #e3e3e3;
+    border-bottom: 1px dashed #e6e6e6; 
     font-size: 0.95rem;
 }
 
@@ -116,31 +116,31 @@ body {
 }
 
 .hero-list-label {
-    color: #555;
+    color: #5d667c; 
 }
 
 .hero-list-value {
     font-weight: 600;
-    color: #0d6efd;
+    color: #ff7f50; 
 }
 
 .hero-card-note {
     font-size: 0.8rem;
-    color: #888;
+    color: #999; 
 }
 
 /* 按鈕 */
 .btn-main {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: #ff7f50; 
+    border-color: #ff7f50; 
     color: #fff;
     border-radius: 999px;
     padding-inline: 1.2rem;
 }
 
 .btn-main:hover {
-    background-color: #0b5ed7;
-    border-color: #0b5ed7;
+    background-color: #e66a3a; 
+    border-color: #e66a3a; 
     color: #fff;
 }
 
@@ -148,12 +148,12 @@ body {
     border-radius: 999px;
     padding-inline: 1.2rem;
     border-width: 1px;
-    color: #0d6efd;
-    border-color: #0d6efd;
+    color: #ff7f50; 
+    border-color: #ff7f50; 
 }
 
 .btn-outline-main:hover {
-    background-color: #0d6efd;
+    background-color: #ff7f50; 
     color: #fff;
 }
 
@@ -178,7 +178,7 @@ body {
     border-radius: 12px;
     padding: 16px 18px;
     height: 100%;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+    box-shadow: 0 4px 16px rgba(26, 35, 126, 0.08); 
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -191,13 +191,13 @@ body {
 
 .feature-text {
     font-size: 0.95rem;
-    color: #555;
+    color: #5d667c; 
     flex: 1;
 }
 
 .feature-link {
     font-size: 0.9rem;
-    color: #0d6efd;
+    color: #066af5; 
     text-decoration: none;
 }
 
@@ -224,12 +224,12 @@ body {
 .footer-text {
     margin: 0;
     font-size: 0.85rem;
-    color: #666;
+    color: #7f8595; 
 }
 
 .footer-link {
     font-size: 0.85rem;
-    color: #0d6efd;
+    color: #ff7f50; 
     text-decoration: none;
 }
 
