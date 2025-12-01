@@ -55,4 +55,3 @@ $roleText = $me['identity'] ?? '';
         </div>
     </nav>
 </header>
-
