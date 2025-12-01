@@ -33,6 +33,20 @@ while ($row = $result->fetch_assoc()) {
 <?php include "../includes/header.php"; ?>
 <?php include "../includes/navbar.php"; ?>
 
+<?php if (isset($_GET["msg"])): ?>
+    <div class="container mt-3">
+        <?php if ($_GET["msg"] === "deleted"): ?>
+            <div class="alert alert-success">刪除成功！</div>
+        <?php elseif ($_GET["msg"] === "not_found"): ?>
+            <div class="alert alert-danger">找不到該住宿資料。</div>
+        <?php elseif ($_GET["msg"] === "missing_id"): ?>
+            <div class="alert alert-warning">缺少住宿紀錄 ID。</div>
+        <?php elseif ($_GET["msg"] === "error"): ?>
+            <div class="alert alert-danger">刪除失敗（可能有關聯資料）。</div>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
 <div class="container mt-4">
     <h2>住宿名單（household）</h2>
 
