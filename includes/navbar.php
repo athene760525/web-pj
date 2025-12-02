@@ -24,7 +24,7 @@ $roleText = $me['identity'] ?? '';
                 <!-- 左側選單 -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/rules.php">住宿規範</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sing-in.php">簽到頁面</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/checkin_self.php">簽到頁面</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/violation.php">違規紀錄</a></li>
                 </ul>
 
