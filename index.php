@@ -25,8 +25,6 @@
                     提供違規記點、返宿簽到、住民資料管理，一站式查看與維護住民狀態。
                 </p>
                 <div class="hero-actions">
-                    <a href="login.php" class="btn btn-main">登入系統</a>
-                    <a href="rules.php" class="btn btn-outline-main">查看住宿規範</a>
                 </div>
             </div>
             <div class="hero-panel">
@@ -84,7 +82,6 @@
                         <a href="violation.php" class="feature-link">前往違規列表</a>
                     </div>
                 </div>
-            </div>
         </div>
     </section>
 </main>
