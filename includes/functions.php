@@ -9,11 +9,6 @@ function h(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
 
-/* 取得目前登入者（如果沒有登入回傳 null） */
-function current_user(): ?array {
-    return $_SESSION['user'] ?? null;
-}
-
 /* 簡單的重新導向 */
 function redirect(string $path): void {
     header("Location: " . BASE_URL . $path);
@@ -26,4 +21,33 @@ function dd($data) {
     print_r($data);
     echo '</pre>';
     exit;
+}
+
+/* ====== 搜尋功能 ====== */
+function build_user_search(string $q): array {
+    if ($q === '') {
+        return ['', [], ''];  // where, params, types
+    }
+
+    $where  = "WHERE account LIKE ? OR name LIKE ?";
+    $params = ["%{$q}%", "%{$q}%"];
+    $types  = "ss";
+
+    return [$where, $params, $types];
+}
+
+/* ====== 排序功能 ====== */
+function build_user_sort(array $allowedSort): array {
+    $sort = $_GET['sort'] ?? $allowedSort[0];
+    $dir  = strtolower($_GET['dir'] ?? 'asc');
+
+    if (!in_array($sort, $allowedSort, true)) {
+        $sort = $allowedSort[0];
+    }
+
+    if (!in_array($dir, ['asc', 'desc'], true)) {
+        $dir = 'asc';
+    }
+
+    return ["ORDER BY {$sort} " . strtoupper($dir), $sort, $dir];
 }
