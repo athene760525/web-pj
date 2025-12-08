@@ -6,15 +6,14 @@ require_once "includes/db.php";
 
 require_login();
 
-$StID = $_SESSION['account'] ?? ($_SESSION['user']['account'] ?? null);
+$StID = $_SESSION['user']['account'] ?? null;
 
 $message = "";
 $last_checkin_time = null;
 
-// 1. 先抓目前這位同學「在住中」的 household 記錄
+// 1. 先抓目前登入者的 household 記錄
 $sql = "SELECT * FROM household
         WHERE StID = ?
-          AND check_out_at IS NULL
         ORDER BY id DESC
         LIMIT 1";
 
@@ -26,7 +25,7 @@ $household = $result->fetch_assoc();
 $stmt->close();
 
 if (!$household) {
-    $message = "找不到你的住宿資料（可能尚未入住或已退宿）。";
+    $message = "找不到你的住宿資料";
 } else {
 
     // 2. 如果有送出簽到表單，就寫入 sign_in
@@ -47,7 +46,7 @@ if (!$household) {
         $stmt->close();
     }
 
-    // 3. 查詢最近一次簽到時間（不管是舍監登記或住戶登記）
+    // 3. 查詢最近一次簽到時間
     $sql_last = "SELECT time
                  FROM sign_in
                  WHERE household_id = ?
@@ -89,7 +88,7 @@ if (!$household) {
         </div>
     <?php else: ?>
 
-        <!-- 住戶基本資訊卡片 -->
+        <!-- 住戶基本資訊 -->
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title mb-3">目前住宿資料</h5>
@@ -103,11 +102,11 @@ if (!$household) {
         <!-- 簽到按鈕 -->
         <form method="post" class="mb-3">
             <button type="submit" class="btn btn-primary btn-lg w-100">
-                我已回宿舍
+                簽到
             </button>
         </form>
 
-        <!-- 顯示訊息（例如：簽到成功！） -->
+        <!-- 顯示訊息 -->
         <?php if ($message): ?>
             <div class="alert alert-info">
                 <?= htmlspecialchars($message) ?>
