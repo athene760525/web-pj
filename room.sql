@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-11-22 13:03:14
+-- 產生時間： 2025-12-08 17:02:10
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.0.30
 
@@ -125,11 +125,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`account`, `name`, `password`, `identity`) VALUES
-('4102282', '小宜', 'st82st82', '住戶'),
-('4110854', '小婷', 'st54st54', '住戶'),
-('4125845', '小雯', 'st45st45', '住戶'),
-('root', '老藍', 'rootroot', '管理員'),
-('super00', '小藍', 'super', '舍監');
+('4102282', '小宜', 'st4102282', '住戶'),
+('4110854', '小婷', 'st4110854', '住戶'),
+('4125845', '小雯', 'st4125845', '住戶'),
+('d001', '小藍', 'thd001', '舍監'),
+('root', '老藍', 'rootroot', '管理員');
 
 -- --------------------------------------------------------
 
@@ -176,7 +176,8 @@ ALTER TABLE `rules`
 -- 資料表索引 `sign_in`
 --
 ALTER TABLE `sign_in`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_signin_household` (`household_id`);
 
 --
 -- 資料表索引 `users`
@@ -188,7 +189,8 @@ ALTER TABLE `users`
 -- 資料表索引 `violation`
 --
 ALTER TABLE `violation`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_violation_household` (`household_id`);
 
 --
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
