@@ -1,16 +1,18 @@
 <?php
 // includes/header.php
 ?>
-<body class="bg-light">
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>輔仁大學學生宿舍住房系統</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <title>DormSystem</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 你自己的主題樣式 -->
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/main.css">
 </head>
+
+<body class="bg-light page">
+

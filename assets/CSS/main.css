@@ -248,3 +248,33 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* 浮動新增按鈕（只有管理員會看到） */
+.fab-add-user {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #ff7f50;
+    color: #fff;
+    font-size: 32px;
+    font-weight: bold;
+
+    border-radius: 50%;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    text-decoration: none;
+
+    z-index: 999;
+    transition: 0.25s ease;
+}
+
+.fab-add-user:hover {
+    background-color: #e66a3a;
+    transform: scale(1.07);
+}

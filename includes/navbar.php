@@ -1,12 +1,15 @@
 <?php
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/functions.php';
+// includes/navbar.php
 
-$me = current_user();
-$roleText = $me['identity'] ?? '';
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/auth.php';      // ★ 一定要載入，裡面有 current_user()
+require_once __DIR__ . '/functions.php'; // h() 等共用工具
+
+$me       = current_user();              // 登入中的使用者（或 null）
+$identity = user_identity();             // 管理員 / 舍監 / 住戶 / null
+$roleText = role_text($identity);        // 管理員 / 舍監 / 住戶 / 訪客
 ?>
 
-<!-- includes/navbar.php -->
 <header class="site-header">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom site-nav">
         <div class="container">
@@ -23,9 +26,22 @@ $roleText = $me['identity'] ?? '';
             <div class="collapse navbar-collapse" id="mainNav">
                 <!-- 左側選單 -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/rules.php">住宿規範</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/checkin_self.php">簽到頁面</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/violation.php">違規紀錄</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= BASE_URL ?>/rules.php">住宿規範</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= BASE_URL ?>/checkin_self.php">簽到頁面</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= BASE_URL ?>/violation.php">違規紀錄</a>
+                    </li>
+
+                    <?php if ($identity === '管理員' || $identity === '舍監'): ?>
+                        <!-- 只有 管理員 / 舍監 看得到的選單 -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= BASE_URL ?>/users.php">使用者資料</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
 
                 <!-- 右側登入區塊 -->
@@ -33,11 +49,10 @@ $roleText = $me['identity'] ?? '';
                     <?php if ($me): ?>
                         <li class="nav-item d-flex align-items-center">
                             <span class="navbar-text text-dark me-3">
-                                歡迎，<?= h($me['name']) ?>（<?= h($roleText) ?>）
+                                您好，<?= h($me['name']) ?>（<?= h($roleText) ?>）
                             </span>
                         </li>
 
-                        <!-- 個人資料 / 修改密碼 -->
                         <li class="nav-item">
                             <a class="nav-link" href="<?= BASE_URL ?>/profile.php">資料修改</a>
                         </li>
@@ -47,7 +62,7 @@ $roleText = $me['identity'] ?? '';
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="btn btn-outline-primary" href="<?= BASE_URL ?>/login.php">登入</a>
+                            <a class="btn btn-main" href="<?= BASE_URL ?>/login.php">登入系統</a>
                         </li>
                     <?php endif; ?>
                 </ul>
