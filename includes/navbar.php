@@ -42,7 +42,7 @@ $roleText = role_text($identity);        // 管理員 / 舍監 / 住戶 / 訪客
                             <a class="nav-link" href="<?= BASE_URL ?>/users.php">使用者資料</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= BASE_URL ?>/household.php">住戶資料</a>
+                            <a class="nav-link" href="<?= BASE_URL ?>/household/household.php">住戶資料</a>
                         </li>
                     <?php endif; ?>
                 </ul>
