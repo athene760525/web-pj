@@ -13,7 +13,7 @@ $roleText = role_text($identity);        // 管理員 / 舍監 / 住戶 / 訪客
 <header class="site-header">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom site-nav">
         <div class="container">
-            <a class="navbar-brand nav-brand-text" href="index.php">
+            <a class="navbar-brand nav-brand-text" href="<?= BASE_URL ?>/index.php">
                 DormSystem
             </a>
 
