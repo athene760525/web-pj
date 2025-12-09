@@ -1,3 +1,53 @@
+<?php
+require_once __DIR__ . "/includes/config.php";
+require_once __DIR__ . "/includes/db.php";
+require_once __DIR__ . "/includes/navbar.php";
+
+
+// 1. 目前住宿中人數：check_out_at 為 NULL 表示尚未退宿
+
+$sqlDorm = "
+    SELECT COUNT(*) AS total_dorm
+    FROM household
+    WHERE check_out_at IS NULL
+";
+$resDorm   = $conn->query($sqlDorm);
+$totalDorm = 0;
+if ($resDorm && $row = $resDorm->fetch_assoc()) {
+    $totalDorm = (int)$row['total_dorm'];
+}
+
+/**
+ * 2. 今日簽到人數：依 sign_in.time
+ *    計算今天有簽到過的不同學生數（避免同一人多次簽到重複計）
+ */
+$sqlSign = "
+    SELECT COUNT(DISTINCT StID) AS total_signed_today
+    FROM sign_in
+    WHERE DATE(time) = CURDATE()
+";
+$resSign          = $conn->query($sqlSign);
+$totalSignedToday = 0;
+if ($resSign && $row2 = $resSign->fetch_assoc()) {
+    $totalSignedToday = (int)$row2['total_signed_today'];
+}
+
+/**
+ * 3. 本週新增違規：依 violation.v_time
+ *    這裡用 YEARWEEK(v_time, 1) = YEARWEEK(CURDATE(), 1)
+ *    表示「本週（週一到週日）」
+ */
+$sqlViolation = "
+    SELECT COUNT(*) AS weekly_violation
+    FROM violation
+    WHERE YEARWEEK(v_time, 1) = YEARWEEK(CURDATE(), 1)
+";
+$resVio          = $conn->query($sqlViolation);
+$weeklyViolation = 0;
+if ($resVio && $row3 = $resVio->fetch_assoc()) {
+    $weeklyViolation = (int)$row3['weekly_violation'];
+}
+?>
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -10,10 +60,6 @@
 
     <!-- 自訂樣式 -->
     <link href="assets/css/main.css" rel="stylesheet">
-</head>
-<body>
-
-<?php include 'includes/navbar.php'; ?>
 
 <main class="page">
     <!-- Hero 區塊 -->
@@ -33,18 +79,24 @@
                     <ul class="hero-list">
                         <li class="hero-list-item">
                             <span class="hero-list-label">今日已簽到</span>
-                            <span class="hero-list-value">—</span>
+                            <span class="hero-list-value">
+                                <?= htmlspecialchars($totalSignedToday, ENT_QUOTES, "UTF-8") ?> 人
+                            </span>
                         </li>
                         <li class="hero-list-item">
                             <span class="hero-list-label">本週新增違規</span>
-                            <span class="hero-list-value">—</span>
+                            <span class="hero-list-value">
+                                <?= htmlspecialchars($weeklyViolation, ENT_QUOTES, "UTF-8") ?> 筆
+                            </span>
                         </li>
                         <li class="hero-list-item">
                             <span class="hero-list-label">目前住宿人數</span>
-                            <span class="hero-list-value">—</span>
+                            <span class="hero-list-value">
+                                <?= htmlspecialchars($totalDorm, ENT_QUOTES, "UTF-8") ?> 人
+                            </span>
                         </li>
                     </ul>
-                    <p class="hero-card-note">＊之後可改成由資料庫帶入真實數字</p>
+                    <p class="hero-card-note">＊由資料庫帶入真實數字</p>
                 </div>
             </div>
         </div>
@@ -82,13 +134,4 @@
                         <a href="violation.php" class="feature-link">前往違規列表</a>
                     </div>
                 </div>
-        </div>
-    </section>
-</main>
-
 <?php include 'includes/footer.php'; ?>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
