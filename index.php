@@ -96,7 +96,6 @@ if ($resVio && $row3 = $resVio->fetch_assoc()) {
                             </span>
                         </li>
                     </ul>
-                    <p class="hero-card-note">＊由資料庫帶入真實數字</p>
                 </div>
             </div>
         </div>
@@ -122,7 +121,7 @@ if ($resVio && $row3 = $resVio->fetch_assoc()) {
                         <p class="feature-text">
                             住民可以查看自己的簽到紀錄，舍監可協助補簽與查詢全部。
                         </p>
-                        <a href="sing-in.php" class="feature-link">前往簽到紀錄</a>
+                        <a href="checkin_list.php" class="feature-link">前往簽到紀錄</a>
                     </div>
                 </div>
                 <div class="col-md-4">
