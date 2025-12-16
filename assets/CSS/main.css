@@ -278,3 +278,28 @@ body {
     background-color: #e66a3a;
     transform: scale(1.07);
 }
+
+
+/* 表格操作欄：水平排列、不換行 */
+.col-actions {
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* 操作欄按鈕群組微調 */
+.col-actions .btn-group .btn {
+    padding: 0.45rem 1rem;
+    line-height: 1.2;
+}
+
+/* 表格列高度修正 */
+.table-household th,
+.table-household td {
+    padding: 0.55rem 0.75rem;
+    vertical-align: middle;
+}
+
+.table-household tr {
+    height: auto !important;
+}
+
