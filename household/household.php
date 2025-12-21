@@ -1,3 +1,4 @@
+household/household.php也幫我改
 <?php
 // household.php - 住宿名單列表（Bootstrap Collapse 展開詳細資料，無 AJAX）
 
@@ -24,13 +25,19 @@ $ALLOWED_DETAIL = [
     'relation'     => '關係',
     'check_in_at'  => '入住時間',
     'check_out_at' => '退宿時間',
+    'total_points' => '本學期累積扣點',
 ];
 
 $sql = "
     SELECT 
         h.*,
         u.name AS uname,
-        u.identity AS uidentity
+        u.identity AS uidentity,
+        (
+            SELECT COALESCE(SUM(v.points), 0)
+            FROM violation v
+            WHERE v.household_id = h.id
+        ) AS total_points
     FROM household h
     JOIN users u ON u.account = h.StID
     ORDER BY h.semester DESC, h.number ASC
@@ -139,6 +146,12 @@ while ($row = $result->fetch_assoc()) {
                                             查看資料
                                         </button>
 
+                                        <!-- 查看違規 -->
+                                        <a class="btn btn-outline-danger btn-sm"
+                                           href="<?= BASE_URL ?>/violation/violation.php?stid=<?= urlencode($r['StID']) ?>">
+                                            查看違規
+                                        </a>
+
                                         <?php if ($isAdmin): ?>
                                             <a class="btn btn-outline-warning"
                                                href="household-update.php?id=<?= $id ?>">
@@ -173,13 +186,22 @@ while ($row = $result->fetch_assoc()) {
                                                             if (!array_key_exists($col, $r)) continue;
                                                             $val = $r[$col];
 
+                                                            // 累積扣點紅字警告
+                                                            if ($col === 'total_points') {
+                                                                if ((int)$val >= 10) {
+                                                                    $val = '<span class="text-danger fw-bold">' . (int)$val . '（達警戒）</span>';
+                                                                } else {
+                                                                    $val = '<span class="text-primary">' . (int)$val . '</span>';
+                                                                }
+                                                            }
+
                                                             if ($col === 'check_out_at' && empty($val)) {
                                                                 $val = '尚未退宿';
                                                             }
                                                         ?>
                                                         <tr>
                                                             <th class="text-muted" style="width:25%;"><?= h($label) ?></th>
-                                                            <td><?= h($val === null ? '' : $val) ?></td>
+                                                            <td><?= is_string($val) && str_starts_with($val, '<') ? $val : h($val) ?></td>
                                                         </tr>
                                                     <?php endforeach; ?>
                                                     </tbody>

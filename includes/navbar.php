@@ -33,7 +33,7 @@ $roleText = role_text($identity);        // 管理員 / 舍監 / 住戶 / 訪客
                         <a class="nav-link" href="<?= BASE_URL ?>/checkin_self.php">簽到頁面</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= BASE_URL ?>/violation.php">違規紀錄</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>/violation/violation.php">違規紀錄</a>
                     </li>
 
                     <?php if ($identity === '管理員' || $identity === '舍監'): ?>
