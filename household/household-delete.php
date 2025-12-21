@@ -5,11 +5,8 @@ require_once "../includes/db.php";
 
 require_login();
 
-// 僅管理員/舍監可刪除
-if (!is_manager()) {
-    echo "<h2 style='margin:20px;'>您沒有權限刪除住宿紀錄。</h2>";
-    exit;
-}
+// 僅管理員 / 舍監 可編輯
+require_role(['管理員', '舍監']);
 
 // 取得要刪除的 id
 $id = $_GET["id"] ?? null;

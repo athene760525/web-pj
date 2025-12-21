@@ -5,10 +5,8 @@ require_once "../includes/db.php";
 
 require_login();
 
-if (!is_manager()) {
-    echo "<h2 class='mt-4 ms-4'>您沒有權限新增住宿紀錄。</h2>";
-    exit;
-}
+// 僅管理員 / 舍監 可編輯
+require_role(['管理員', '舍監']);
 
 $search_result = null;
 $last_house_record = null;
