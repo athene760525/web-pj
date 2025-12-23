@@ -58,7 +58,7 @@ $violations = $stmtV->get_result();
 
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h4>違規紀錄</h4>
-        <a href="../violation/violation-insert.php?household_id=<?= $id ?>"
+        <a href="../violation/violation-create.php?household_id=<?= $id ?>"
            class="btn btn-danger btn-sm">
             ＋ 新增違規
         </a>
