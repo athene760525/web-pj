@@ -9,6 +9,7 @@ require_login();
 $me       = current_user();
 $identity = $me['identity'] ?? '';
 $account  = $me['account'] ?? '';
+$myName   = $me['name'] ?? '';
 
 // 管理員 / 舍監
 $isStaff = in_array($identity, ['管理員', '舍監']);
@@ -97,6 +98,18 @@ if ($sumTarget !== '') {
     $totalPoints = (int)$sumStmt->get_result()->fetch_assoc()['total'];
 }
 
+// 若為管理員且檢視單一學生，取得該學生姓名以便顯示
+$targetName = '';
+if ($isStaff && $targetStID !== '') {
+    $nstmt = $conn->prepare("SELECT name FROM users WHERE account = ?");
+    if ($nstmt) {
+        $nstmt->bind_param("s", $targetStID);
+        $nstmt->execute();
+        $nrow = $nstmt->get_result()->fetch_assoc();
+        $targetName = $nrow['name'] ?? '';
+    }
+}
+
 $WARNING_LIMIT = 10; // ⚠ 扣點警戒值
 ?>
 
@@ -136,6 +149,8 @@ $WARNING_LIMIT = 10; // ⚠ 扣點警戒值
         <div class="alert alert-info">
             目前檢視學號：
             <strong><?= h($targetStID) ?></strong>
+            ／ 姓名：
+            <strong><?= h($targetName) ?></strong>
             ，累積扣點：
             <strong class="<?= $totalPoints >= $WARNING_LIMIT ? 'text-danger' : '' ?>">
                 <?= (int)$totalPoints ?>
@@ -147,6 +162,10 @@ $WARNING_LIMIT = 10; // ⚠ 扣點警戒值
     <!-- 學生自己的警告 -->
     <?php if (!$isStaff): ?>
         <div class="alert <?= $totalPoints >= $WARNING_LIMIT ? 'alert-danger' : 'alert-info' ?>">
+            學號：<strong><?= h($account) ?></strong>
+            &nbsp;／&nbsp;
+            姓名：<strong><?= h($myName) ?></strong>
+            &nbsp;／&nbsp;
             累積扣點：
             <strong><?= (int)$totalPoints ?></strong>
             <?php if ($totalPoints >= $WARNING_LIMIT): ?>
