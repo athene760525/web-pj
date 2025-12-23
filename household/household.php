@@ -1,4 +1,3 @@
-household/household.php也幫我改
 <?php
 // household.php - 住宿名單列表（Bootstrap Collapse 展開詳細資料，無 AJAX）
 
@@ -92,23 +91,24 @@ while ($row = $result->fetch_assoc()) {
                 <table class="table table-bordered table-striped table-hover mb-0 table-household">
                     <thead class="table-dark">
                         <tr>
-                            <th style="width:6%;">ID</th>
+                            <th style="width:5%;">ID</th>
                             <th style="width:10%;">學號</th>
                             <th style="width:10%;">姓名</th>
-                            <th style="width:10%;">學期</th>
-                            <th style="width:8%;">房號</th>
+                            <th style="width:8%;">學期</th>
+                            <th style="width:6%;">房號</th>
                             <th style="width:12%;">學生電話</th>
-                            <th style="width:18%;">緊急聯絡人</th>
-                            <th style="width:12%;">入住時間</th>
-                            <th style="width:10%;">退宿</th>
-                            <th style="width:14%;">操作</th>
+                            <th style="width:15%;">緊急聯絡人</th>
+                            <th style="width:10%;">入住時間</th>
+                            <th style="width:8%;">退宿</th>
+                            <th style="width:12%;">違規總點數</th>
+                            <th style="width:10%;">操作</th>
                         </tr>
                     </thead>
 
                     <tbody>
                     <?php if (empty($rows)): ?>
                         <tr>
-                            <td colspan="10" class="text-center text-muted py-4">目前尚無住宿紀錄。</td>
+                            <td colspan="11" class="text-center text-muted py-4">目前尚無住宿紀錄。</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($rows as $r): ?>
@@ -132,6 +132,15 @@ while ($row = $result->fetch_assoc()) {
                                         <span class="text-danger"><?= h($r["check_out_at"]) ?></span>
                                     <?php else: ?>
                                         <span class="text-primary">未退宿</span>
+                                    <?php endif; ?>
+                                </td>
+
+                                <td class="text-center">
+                                    <?php $tp = (int)($r['total_points'] ?? 0); ?>
+                                    <?php if ($tp >= 10): ?>
+                                        <span class="text-danger fw-bold"><?= $tp ?></span>
+                                    <?php else: ?>
+                                        <span class="text-primary"><?= $tp ?></span>
                                     <?php endif; ?>
                                 </td>
 
@@ -170,7 +179,7 @@ while ($row = $result->fetch_assoc()) {
 
                             <!-- 詳細列（Collapse 內容） -->
                             <tr>
-                                <td colspan="10" class="p-0 bg-light">
+                                <td colspan="11" class="p-0 bg-light">
                                     <div id="<?= h($collapseId) ?>" class="collapse">
                                         <div class="p-3">
                                             <div class="d-flex align-items-center justify-content-between mb-2">
