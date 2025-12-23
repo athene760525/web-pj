@@ -105,6 +105,22 @@ $WARNING_LIMIT = 10; // ⚠ 扣點警戒值
 
 <main class="container my-4">
 
+    <?php if (isset($_GET['msg'])): ?>
+        <div class="mb-3">
+            <?php if ($_GET['msg'] === 'updated'): ?>
+                <div class="alert alert-success mb-0">✅ 更新成功！</div>
+            <?php elseif ($_GET['msg'] === 'deleted'): ?>
+                <div class="alert alert-success mb-0">✅ 刪除成功！</div>
+            <?php elseif ($_GET['msg'] === 'not_found'): ?>
+                <div class="alert alert-danger mb-0">❌ 找不到該違規紀錄。</div>
+            <?php elseif ($_GET['msg'] === 'forbidden'): ?>
+                <div class="alert alert-danger mb-0">❌ 您沒有權限執行此操作。</div>
+            <?php elseif ($_GET['msg'] === 'error'): ?>
+                <div class="alert alert-danger mb-0">❌ 操作失敗，請稍後再試。</div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">違規紀錄</h2>
 
@@ -124,7 +140,7 @@ $WARNING_LIMIT = 10; // ⚠ 扣點警戒值
             <strong class="<?= $totalPoints >= $WARNING_LIMIT ? 'text-danger' : '' ?>">
                 <?= (int)$totalPoints ?>
             </strong>
-            <a href="violation.php" class="ms-2">（返回全部）</a>
+            <a href="../household/household.php" class="ms-2">（返回全部）</a>
         </div>
     <?php endif; ?>
 

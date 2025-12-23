@@ -11,6 +11,8 @@ require_role(['管理員', '舍監']);
 
 $error = '';
 $success = '';
+// 預設填入目前時間（用於表單的 datetime-local）
+$defaultVTime = date('Y-m-d\TH:i');
 
 // =======================
 // 1️⃣ 搜尋學生
@@ -77,19 +79,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $content = $rule['content'];
             $points  = $rule['points'];
 
-            $sql = "
-                INSERT INTO violation
-                (household_id, StID, content, points, v_time)
-                VALUES (?, ?, ?, ?, NOW())
-            ";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param(
-                "issi",
-                $household_id,
-                $stid,
-                $content,
-                $points
-            );
+            // 如果表單有傳入 v_time，使用表單值；否則用 NOW()
+            $v_time = $_POST['v_time'] ?? '';
+            if ($v_time) {
+                // datetime-local 回傳格式為 YYYY-MM-DDTHH:MM，轉為 MySQL DATETIME
+                $v_time_sql = str_replace('T', ' ', $v_time) . ':00';
+
+                $sql = "
+                    INSERT INTO violation
+                    (household_id, StID, content, points, v_time)
+                    VALUES (?, ?, ?, ?, ?)
+                ";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param(
+                    "issis",
+                    $household_id,
+                    $stid,
+                    $content,
+                    $points,
+                    $v_time_sql
+                );
+
+            } else {
+                $sql = "
+                    INSERT INTO violation
+                    (household_id, StID, content, points, v_time)
+                    VALUES (?, ?, ?, ?, NOW())
+                ";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param(
+                    "issi",
+                    $household_id,
+                    $stid,
+                    $content,
+                    $points
+                );
+            }
 
             if ($stmt->execute()) {
                 $success = '違規紀錄已成功新增。';
@@ -152,6 +177,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 </select>
             </div>
+
+                <div class="mb-3">
+                    <label class="form-label">違規時間</label>
+                    <input type="datetime-local" name="v_time" class="form-control"
+                           value="<?= h($defaultVTime) ?>">
+                    <div class="form-text">預設為現在時間，可視情況調整。</div>
+                </div>
 
             <button class="btn btn-danger">新增違規</button>
             <a href="violation.php" class="btn btn-secondary">取消</a>
