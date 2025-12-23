@@ -124,13 +124,13 @@ if ($resVio && $row3 = $resVio->fetch_assoc()) {
                         <a href="checkin_list.php" class="feature-link">前往簽到紀錄</a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                        <div class="col-md-4">
                     <div class="feature-card">
                         <h3 class="feature-title">違規記點</h3>
                         <p class="feature-text">
                             管理員與舍監可新增、修改、刪除違規紀錄，系統自動加總點數。
                         </p>
-                        <a href="violation.php" class="feature-link">前往違規列表</a>
+                        <a href="violation/violation.php" class="feature-link">前往違規列表</a>
                     </div>
                 </div>
 <?php include 'includes/footer.php'; ?>
