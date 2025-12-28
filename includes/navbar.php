@@ -8,6 +8,7 @@ require_once __DIR__ . '/functions.php'; // h() 等共用工具
 $me       = current_user();              // 登入中的使用者（或 null）
 $identity = user_identity();             // 管理員 / 舍監 / 住戶 / null
 $roleText = role_text($identity);        // 管理員 / 舍監 / 住戶 / 訪客
+$role = user_identity();
 ?>
 
 <header class="site-header">
@@ -30,7 +31,13 @@ $roleText = role_text($identity);        // 管理員 / 舍監 / 住戶 / 訪客
                         <a class="nav-link" href="<?= BASE_URL ?>/rules.php">住宿規範</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= BASE_URL ?>/checkin_self.php">簽到頁面</a>
+                        <?php if (in_array($role, ['管理員', '舍監'], true)): ?>
+                            <!-- 管理員 / 舍監 -->
+                            <a class="nav-link" href="checkin_create.php">簽到</a>
+                        <?php else: ?>
+                            <!-- 一般住戶 -->
+                            <a class="nav-link" href="checkin_self.php">簽到</a>
+                        <?php endif; ?>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= BASE_URL ?>/violation/violation.php">違規紀錄</a>

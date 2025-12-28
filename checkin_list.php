@@ -57,7 +57,7 @@ if ($q !== "") {
 
 $sqlSigned = "
     SELECT
-        s.time, s.method,
+        s.time, s.method, s.photo,
         h.name, h.StID, h.number, h.semester
     FROM sign_in s
     JOIN household h ON h.id = s.household_id
@@ -166,6 +166,7 @@ $stmt->close();
                     <th>姓名</th>
                     <th>學號</th>
                     <th>學期</th>
+                    <th>照片</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -180,6 +181,13 @@ $stmt->close();
                             <td><?= htmlspecialchars($r['name']) ?></td>
                             <td><?= htmlspecialchars($r['StID']) ?></td>
                             <td><?= htmlspecialchars($r['semester']) ?></td>
+                            <td>
+                                <?php if (!empty($r['photo'])): ?>
+                                    <img src="<?= htmlspecialchars($r['photo']) ?>" width="80">
+                                <?php else: ?>
+                                    —
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
