@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-12-09 08:27:17
+-- 產生時間： 2025-12-28 18:22:54
 -- 伺服器版本： 10.4.32-MariaDB
--- PHP 版本： 8.0.30
+-- PHP 版本： 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -191,18 +191,24 @@ CREATE TABLE `sign_in` (
   `household_id` int(10) UNSIGNED NOT NULL COMMENT 'FK → household.id',
   `StID` varchar(20) NOT NULL COMMENT '學號',
   `time` datetime NOT NULL DEFAULT current_timestamp() COMMENT '簽到時間',
-  `method` enum('舍監登記','住戶登記') NOT NULL COMMENT '簽到方式'
+  `method` enum('舍監登記','住戶登記') NOT NULL COMMENT '簽到方式',
+  `photo` varchar(255) DEFAULT NULL COMMENT '簽到照片'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `sign_in`
 --
 
-INSERT INTO `sign_in` (`id`, `household_id`, `StID`, `time`, `method`) VALUES
-(1, 1, '4125845', '2025-11-21 03:23:14', '住戶登記'),
-(2, 2, '4110854', '2025-11-21 03:23:14', '舍監登記'),
-(3, 3, '4102282', '2025-11-21 03:23:14', '住戶登記'),
-(7, 3, '4102282', '2025-12-09 14:16:15', '住戶登記');
+INSERT INTO `sign_in` (`id`, `household_id`, `StID`, `time`, `method`, `photo`) VALUES
+(1, 1, '4125845', '2025-11-21 03:23:14', '住戶登記', NULL),
+(2, 2, '4110854', '2025-11-21 03:23:14', '舍監登記', NULL),
+(3, 3, '4102282', '2025-11-21 03:23:14', '住戶登記', NULL),
+(7, 3, '4102282', '2025-12-09 14:16:15', '住戶登記', NULL),
+(8, 1, '4125845', '2025-12-28 23:43:03', '舍監登記', NULL),
+(9, 1, '4125845', '2025-12-28 23:44:41', '舍監登記', NULL),
+(16, 1, '4125845', '2025-12-28 23:51:53', '住戶登記', NULL),
+(17, 1, '4125845', '2025-12-29 00:52:03', '住戶登記', NULL),
+(18, 1, '4125845', '2025-12-29 01:02:35', '住戶登記', NULL);
 
 -- --------------------------------------------------------
 
@@ -321,7 +327,7 @@ ALTER TABLE `penalty`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `sign_in`
 --
 ALTER TABLE `sign_in`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '簽到紀錄編號', AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '簽到紀錄編號', AUTO_INCREMENT=19;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `violation`
