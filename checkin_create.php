@@ -14,7 +14,7 @@ $sqlResidents = "
     SELECT id, StID, name, number, semester
     FROM household
     WHERE check_out_at IS NULL
-    ORDER BY number ASC, id DESC
+    ORDER BY number ASC, id DESC 
 ";
 $resResidents = $conn->query($sqlResidents);
 $residents = [];
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 3) 讀取最近 20 筆簽到（方便你確認有寫進 DB）
+// 3) 讀取最近 20 筆簽到
 $sqlRecent = "
     SELECT s.time, s.method, h.name, h.StID, h.number
     FROM sign_in s

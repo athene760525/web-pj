@@ -16,7 +16,7 @@ $message = "";
 $error = "";
 $last_checkin_time = null;
 
-// 1️⃣ 找出目前在住的 household
+// 找出目前在住的 household
 $sql = "SELECT * FROM household
         WHERE StID = ?
           AND (check_out_at IS NULL OR check_out_at = '0000-00-00 00:00:00')
@@ -32,10 +32,10 @@ if (!$household) {
     $error = "找不到你的住宿資料（可能尚未入住或已退宿）。";
 }
 
-// 2️⃣ 使用者送出簽到表單
+// 使用者送出簽到表單
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $household) {
 
-    // ===== 圖片上傳（沿用老師教法）=====
+    // ===== 圖片上傳 =====
     $photoPath = null;
 
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] === 0) {
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $household) {
     $stmt->close();
 }
 
-// 3️⃣ 讀取最近一次簽到時間
+// 讀取最近一次簽到時間
 if ($household) {
     $sql = "SELECT time FROM sign_in
             WHERE household_id = ?
