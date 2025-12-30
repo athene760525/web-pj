@@ -41,13 +41,13 @@ if (!$violation) {
 $violation_vtime = date('Y-m-d\TH:i', strtotime($violation['v_time']));
 
 /* =======================
-   2️⃣ 撈 rules 清單
+   2️⃣ 撈 penalty 清單
 ======================= */
-$rules = [];
-$ruleSql = "SELECT id, content, points FROM rules ORDER BY id ASC";
-$ruleRes = $conn->query($ruleSql);
-while ($r = $ruleRes->fetch_assoc()) {
-    $rules[] = $r;
+$penalties = [];
+$penaltySql = "SELECT id, content, points FROM penalty ORDER BY id ASC";
+$penaltyRes = $conn->query($penaltySql);
+while ($r = $penaltyRes->fetch_assoc()) {
+    $penalties[] = $r;
 }
 
 /* =======================
@@ -55,22 +55,22 @@ while ($r = $ruleRes->fetch_assoc()) {
 ======================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $rule_id = $_POST['rule_id'] ?? '';
+    $penalty_id = $_POST['penalty_id'] ?? '';
 
-    if (!$rule_id) {
+    if (!$penalty_id) {
         $error = '請選擇違規規則';
     } else {
         // 找規則
-        $stmt = $conn->prepare("SELECT content, points FROM rules WHERE id = ?");
-        $stmt->bind_param("i", $rule_id);
+        $stmt = $conn->prepare("SELECT content, points FROM penalty WHERE id = ?");
+        $stmt->bind_param("i", $penalty_id);
         $stmt->execute();
-        $rule = $stmt->get_result()->fetch_assoc();
+        $penalty = $stmt->get_result()->fetch_assoc();
 
-        if (!$rule) {
+        if (!$penalty) {
             $error = '找不到違規規則';
         } else {
-            $content = $rule['content'];
-            $points  = $rule['points'];
+            $content = $penalty['content'];
+            $points  = $penalty['points'];
 
             // 允許同時更新違規時間
             $v_time = $_POST['v_time'] ?? '';
@@ -120,12 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="post">
         <div class="mb-3">
             <label class="form-label">違規規則</label>
-            <select name="rule_id" class="form-select" required>
+            <select name="penalty_id" class="form-select" required>
                 <option value="">請選擇</option>
-                <?php foreach ($rules as $r): ?>
-                    <option value="<?= $r['id'] ?>"
-                        <?= ($r['content'] === $violation['content']) ? 'selected' : '' ?>>
-                        <?= h($r['content']) ?>（<?= h($r['points']) ?> 點）
+                <?php foreach ($penalties as $p): ?>
+                    <option value="<?= $p['id'] ?>"
+                        <?= ($p['content'] === $violation['content']) ? 'selected' : '' ?>>
+                        <?= h($p['content']) ?>（<?= h($p['points']) ?> 點）
                     </option>
                 <?php endforeach; ?>
             </select>
