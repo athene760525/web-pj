@@ -28,7 +28,7 @@ $role = user_identity();
                 <!-- 左側選單 -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= BASE_URL ?>/rules.php">住宿規範</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>/penalty.php">住宿規範</a>
                     </li>
                     <li class="nav-item">
                         <?php if (in_array($role, ['管理員', '舍監'], true)): ?>

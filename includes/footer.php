@@ -12,7 +12,7 @@
         <div class="footer-right">
             <a href="contact.php" class="footer-link">聯絡管理員</a>
             <span class="footer-divider">|</span>
-            <a href="rules.php" class="footer-link">住宿規範</a>
+            <a href="penalty.php" class="footer-link">住宿規範</a>
         </div>
     </div>
 </footer>

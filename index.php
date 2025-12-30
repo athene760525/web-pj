@@ -112,7 +112,7 @@ if ($resVio && $row3 = $resVio->fetch_assoc()) {
                         <p class="feature-text">
                             公開給所有住民查詢，管理員可以在後台維護與更新內容。
                         </p>
-                        <a href="rules.php" class="feature-link">前往規範頁面</a>
+                        <a href="penalty.php" class="feature-link">前往規範頁面</a>
                     </div>
                 </div>
                 <div class="col-md-4">
