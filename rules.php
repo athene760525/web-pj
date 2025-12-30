@@ -51,6 +51,7 @@ include __DIR__ . '/includes/header.php';
 include __DIR__ . '/includes/navbar.php';
 ?>
 
+<<<<<<< HEAD
 <main class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3><i class="fas fa-tools text-danger me-2"></i>住宿規範與扣點管理 <small class="text-muted" style="font-size: 0.5em;">(管理員模式)</small></h3>
@@ -91,9 +92,34 @@ include __DIR__ . '/includes/navbar.php';
                     <button class="btn btn-success w-100">新增</button>
                 </div>
             </form>
-        </div>
-    </div>
+=======
+<main class="container my-4">
+    <h2 class="mb-3">違規規則</h2>
 
+    <?php if ($msg === 'created'): ?><div class="alert alert-success">新增成功</div><?php endif; ?>
+    <?php if ($msg === 'updated'): ?><div class="alert alert-success">更新成功</div><?php endif; ?>
+    <?php if ($msg === 'deleted'): ?><div class="alert alert-success">刪除成功</div><?php endif; ?>
+    <?php if ($msg === 'used'): ?><div class="alert alert-danger">規則已被使用，無法刪除</div><?php endif; ?>
+    <?php if ($error): ?><div class="alert alert-danger"><?= h($error) ?></div><?php endif; ?>
+
+    <!-- 新增（管理員） -->
+    <?php if ($isStaff): ?>
+        <div class="card mb-4">
+            <div class="card-header">新增規則</div>
+            <div class="card-body">
+                <form method="post" class="row g-2">
+                    <input type="hidden" name="action" value="create">
+                    <div class="col-md-3"><input name="article_no" class="form-control" placeholder="條例"></div>
+                    <div class="col-md-6"><input name="content" class="form-control" placeholder="內容"></div>
+                    <div class="col-md-1"><input name="points" type="number" min="0" class="form-control"></div>
+                    <div class="col-md-2"><button class="btn btn-danger w-100">新增</button></div>
+                </form>
+            </div>
+>>>>>>> dacce37adc0a4e771f4d72026bb977fe69d3ccfe
+        </div>
+    <?php endif; ?>
+
+<<<<<<< HEAD
     <!-- 條文列表與快速編輯 -->
     <div class="table-responsive">
         <table class="table table-bordered table-hover bg-white shadow-sm">
@@ -142,6 +168,73 @@ include __DIR__ . '/includes/navbar.php';
             </tbody>
         </table>
     </div>
+=======
+    <!-- 列表 -->
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>條例</th>
+            <th>內容</th>
+            <th>扣點</th>
+            <?php if ($isStaff): ?><th style="width:180px;">操作</th><?php endif; ?>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($rules as $r): ?>
+            <tr>
+                <form method="post">
+                    <td><?= $r['id'] ?></td>
+
+                    <td>
+                        <?php if ($isStaff): ?>
+                            <input type="text" name="article_no" class="form-control"
+                                   value="<?= h($r['article_no']) ?>">
+                        <?php else: ?>
+                            <?= h($r['article_no']) ?>
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <?php if ($isStaff): ?>
+                            <input type="text" name="content" class="form-control"
+                                   value="<?= h($r['content']) ?>">
+                        <?php else: ?>
+                            <?= h($r['content']) ?>
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <?php if ($isStaff): ?>
+                            <input type="number" name="points" class="form-control"
+                                   value="<?= (int)$r['points'] ?>">
+                        <?php else: ?>
+                            <?= (int)$r['points'] ?>
+                        <?php endif; ?>
+                    </td>
+
+                    <?php if ($isStaff): ?>
+                        <td>
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="id" value="<?= $r['id'] ?>">
+
+                            <button class="btn btn-sm btn-warning me-1">更新</button>
+
+                            <a href="rules.php?delete=<?= $r['id'] ?>"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('確定要刪除？');">
+                                刪除
+                            </a>
+                        </td>
+                    <?php endif; ?>
+                </form>
+            </tr>
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+>>>>>>> dacce37adc0a4e771f4d72026bb977fe69d3ccfe
 </main>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

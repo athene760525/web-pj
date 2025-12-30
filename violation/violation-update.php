@@ -1,5 +1,5 @@
 <?php
-// violation/violation-edit.php
+// violation/violation-update.php
 
 require_once "../includes/config.php";
 require_once "../includes/auth.php";
@@ -37,7 +37,7 @@ if (!$violation) {
     die('找不到該違規紀錄');
 }
 
-// 用於表單的 datetime-local 預設值
+// datetime-local 預設值
 $violation_vtime = date('Y-m-d\TH:i', strtotime($violation['v_time']));
 
 /* =======================
@@ -72,7 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $content = $penalty['content'];
             $points  = $penalty['points'];
 
-            // 允許同時更新違規時間
+            $article_no = $rule['article_no'];
+            $content    = $rule['content'];
+            $points     = $rule['points'];
+
+            // 更新時間（可選）
             $v_time = $_POST['v_time'] ?? '';
             if ($v_time) {
                 $v_time_sql = str_replace('T', ' ', $v_time) . ':00';
@@ -82,11 +86,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $sql = "
                 UPDATE violation
-                SET content = ?, points = ?, v_time = ?
+                SET 
+                    article_no = ?,
+                    content    = ?,
+                    points     = ?,
+                    v_time     = ?
                 WHERE id = ?
             ";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sisi", $content, $points, $v_time_sql, $id);
+            $stmt->bind_param(
+                "ssisi",
+                $article_no,
+                $content,
+                $points,
+                $v_time_sql,
+                $id
+            );
 
             if ($stmt->execute()) {
                 header("Location: violation.php?msg=updated");
@@ -113,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card-body">
             <p><strong>學號：</strong><?= h($violation['StID']) ?></p>
             <p><strong>姓名：</strong><?= h($violation['student_name']) ?></p>
-            <p><strong>違規時間：</strong><?= h($violation['v_time']) ?></p>
+            <p><strong>目前違規時間：</strong><?= h($violation['v_time']) ?></p>
         </div>
     </div>
 
@@ -133,7 +148,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="mb-3">
             <label class="form-label">違規時間</label>
-            <input type="datetime-local" name="v_time" class="form-control"
+            <input type="datetime-local"
+                   name="v_time"
+                   class="form-control"
                    value="<?= h($violation_vtime) ?>">
         </div>
 
