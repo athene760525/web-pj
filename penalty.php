@@ -1,7 +1,10 @@
 <?php
 require_once "includes/config.php";
+require_once "includes/auth.php"; // ★ 確保能抓到 $identity
 require_once "includes/db.php";
 
+// 從 auth.php 取得身分
+$identity = user_identity(); 
 
 // 1. 取得當前要顯示的類型 (預設為 'agreement')
 $view = isset($_GET['view']) ? $_GET['view'] : 'agreement';
@@ -9,14 +12,17 @@ $view = isset($_GET['view']) ? $_GET['view'] : 'agreement';
 // 2. 根據點選的項目設定 SQL 語法與標題
 if ($view === 'penalty') {
     $title = "違規內容 (扣點標準)";
-    $sql = "SELECT article_no, content, points FROM penalty ORDER BY article_no ASC";
-    $is_penalty = true; // 用來判斷是否要顯示「扣點」這一欄
+    // 這裡已修改為依照 ID 排序
+    $sql = "SELECT article_no, content, points FROM penalty ORDER BY points ASC";
+    $is_penalty = true;
 } else {
-    $view = 'agreement'; // 強制校正
-    $title = "住宿規範";
-    $sql = "SELECT article_no, content FROM dorm_agreement ORDER BY article_no ASC";
+    $view = 'agreement';
+    $title = "住宿規範 (基本規章)";
+    $sql = "SELECT article_no, content FROM dorm_agreement ORDER BY id ASC";
     $is_penalty = false;
 }
+
+
 
 $result = $conn->query($sql);
 ?>
@@ -42,12 +48,11 @@ $result = $conn->query($sql);
             background-color: #f8f9fa;
             border-bottom: 2px solid #dee2e6;
         }
-        /* 水平置中標題 */
         .table th {
             text-align: center;
             vertical-align: middle;
+            background-color: #f1f3f5;
         }
-        /* 垂直置中內容 */
         .table td {
             vertical-align: middle;
         }
@@ -55,6 +60,13 @@ $result = $conn->query($sql);
             border-left: 5px solid #007bff;
             padding-left: 15px;
             margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .badge-points {
+            font-size: 1rem;
+            padding: 5px 10px;
         }
     </style>
 </head>
@@ -76,17 +88,27 @@ $result = $conn->query($sql);
                 <a href="?view=penalty" class="list-group-item list-group-item-action sidebar-link <?php echo ($view == 'penalty') ? 'active' : ''; ?>">
                     <i class="fas fa-exclamation-circle me-2"></i> 違規內容 (扣點)
                 </a>
+                
+                
             </div>
-            
-            
         </div>
 
         <!-- 右側內容區 -->
         <div class="col-md-9">
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
+                    <!-- 標題與按鈕區 -->
                     <div class="page-header">
-                        <h3 class="mb-0"><?php echo $title; ?></h3>
+                        <h3 class="mb-0">
+                            <i class="fas <?= $is_penalty ? 'fa-gavel' : 'fa-book-open' ?> me-2"></i><?php echo $title; ?>
+                        </h3>
+                        
+                        <!-- ★ 只有管理員可以看到管理按鈕 -->
+                        <?php if ($identity === '管理員'): ?>
+                            <a href="rules.php" class="btn btn-outline-danger btn-sm shadow-sm">
+                                <i class="fas fa-edit me-1"></i> 管理模式
+                            </a>
+                        <?php endif; ?>
                     </div>
 
                     <div class="table-responsive">
@@ -105,17 +127,17 @@ $result = $conn->query($sql);
                                 if ($result && $result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td class='text-center fw-bold'>" . htmlspecialchars($row["article_no"]) . "</td>";
-                                        echo "<td>" . nl2br(htmlspecialchars($row["content"])) . "</td>";
+                                        echo "<td class='text-center fw-bold text-secondary'>" . htmlspecialchars($row["article_no"]) . "</td>";
+                                        echo "<td class='ps-3'>" . nl2br(htmlspecialchars($row["content"])) . "</td>";
                                         
                                         if ($is_penalty) {
-                                            echo "<td class='text-center text-danger fw-bold'>" . htmlspecialchars($row["points"]) . "</td>";
+                                            echo "<td class='text-center text-danger fw-bold'><span class='badge bg-danger-subtle text-danger border border-danger-subtle badge-points'>" . htmlspecialchars($row["points"]) . "</span></td>";
                                         }
                                         echo "</tr>";
                                     }
                                 } else {
                                     $col_span = $is_penalty ? 3 : 2;
-                                    echo "<tr><td colspan='$col_span' class='text-center text-muted py-4'>暫無資料</td></tr>";
+                                    echo "<tr><td colspan='$col_span' class='text-center text-muted py-5'>目前暫無資料。</td></tr>";
                                 }
                                 ?>
                             </tbody>

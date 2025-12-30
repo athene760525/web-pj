@@ -68,7 +68,7 @@ if ($resVio && $row3 = $resVio->fetch_assoc()) {
             <div class="hero-text">
                 <h1 class="hero-title">宿舍住民安全與紀律系統</h1>
                 <p class="hero-subtitle">
-                    提供違規記點、返宿簽到、住民資料管理，一站式查看與維護住民狀態。
+                    提供違規記點、返宿簽到、住宿資料管理，一站式查看與維護住民狀態。
                 </p>
                 <div class="hero-actions">
                 </div>
