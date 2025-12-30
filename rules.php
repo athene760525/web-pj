@@ -1,15 +1,14 @@
 <?php
-// rules.php - 違規規則管理（PDO 版本）
-// 路徑：專案根目錄 /rules.php
+// penalty.php - 違規規則管理（PDO 版本）
 
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/functions.php';
 
 require_login();
-require_role(['管理員', '舍監']); // 只有管理員/舍監可進
+require_role(['管理員', '舍監']);
 
-// ===== PDO 連線（獨立用 PDO，不用你原本的 mysqli）=====
+// ===== PDO 連線 =====
 try {
     $pdo = new PDO(
         "mysql:host=localhost;dbname=room;charset=utf8mb4",
@@ -28,55 +27,69 @@ try {
 $msg   = $_GET['msg'] ?? '';
 $error = '';
 
-// 讓新增表單失敗時可保留輸入
+// 表單保留值
+$formArticle = trim($_POST['article_no'] ?? '');
 $formContent = trim($_POST['content'] ?? '');
 $formPoints  = $_POST['points'] ?? '';
 
-// ===== 新增規則 =====
+// =======================
+// 新增規則
+// =======================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create') {
-    $content = trim($_POST['content'] ?? '');
-    $points  = (int)($_POST['points'] ?? 0);
 
-    if ($content === '' || $points <= 0) {
-        $error = '請輸入「規則內容」且扣點需大於 0。';
+    $article_no = trim($_POST['article_no'] ?? '');
+    $content    = trim($_POST['content'] ?? '');
+    $points     = (int)($_POST['points'] ?? 0);
+
+    if ($article_no === '' || $content === '' || $points <= 0) {
+        $error = '請輸入「條例」、「規則內容」，且扣點需大於 0。';
     } else {
-        $stmt = $pdo->prepare("INSERT INTO rules (content, points) VALUES (?, ?)");
-        $stmt->execute([$content, $points]);
+        $stmt = $pdo->prepare(
+            "INSERT INTO penalty (article_no, content, points) VALUES (?, ?, ?)"
+        );
+        $stmt->execute([$article_no, $content, $points]);
         header("Location: " . BASE_URL . "/rules.php?msg=created");
         exit;
     }
 }
 
-// ===== 編輯規則 =====
+// =======================
+// 編輯規則
+// =======================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'update') {
-    $id      = (int)($_POST['id'] ?? 0);
-    $content = trim($_POST['content'] ?? '');
-    $points  = (int)($_POST['points'] ?? 0);
+
+    $id         = (int)($_POST['id'] ?? 0);
+    $article_no = trim($_POST['article_no'] ?? '');
+    $content    = trim($_POST['content'] ?? '');
+    $points     = (int)($_POST['points'] ?? 0);
 
     if ($id <= 0) {
         $error = '缺少規則 ID。';
-    } elseif ($content === '' || $points <= 0) {
-        $error = '請輸入「規則內容」且扣點需大於 0。';
+    } elseif ($article_no === '' || $content === '' || $points <= 0) {
+        $error = '請輸入完整資料，且扣點需大於 0。';
     } else {
-        $stmt = $pdo->prepare("UPDATE rules SET content = ?, points = ? WHERE id = ?");
-        $stmt->execute([$content, $points, $id]);
+        $stmt = $pdo->prepare(
+            "UPDATE penalty SET article_no = ?, content = ?, points = ? WHERE id = ?"
+        );
+        $stmt->execute([$article_no, $content, $points, $id]);
         header("Location: " . BASE_URL . "/rules.php?msg=updated");
         exit;
     }
 }
 
-// ===== 刪除規則（有被使用就禁止）=====
-// 你目前 violation 表沒有 rule_id，所以只能用 content 去判斷是否被使用（先用 rules.content 比對 violation.content）
+// =======================
+// 刪除規則（若已被使用禁止）
+// =======================
 if (isset($_GET['delete'])) {
-    $id = (int)$_GET['delete'];
 
+    $id = (int)$_GET['delete'];
     if ($id <= 0) {
         header("Location: " . BASE_URL . "/rules.php?msg=error");
         exit;
     }
 
-    // 先取出該 rule 的 content
-    $stmt = $pdo->prepare("SELECT content FROM rules WHERE id = ?");
+    // 取得 article_no
+    $stmt = $pdo->prepare("SELECT article_no FROM penalty WHERE id = ?");
     $stmt->execute([$id]);
     $rule = $stmt->fetch();
 
@@ -85,9 +98,11 @@ if (isset($_GET['delete'])) {
         exit;
     }
 
-    // 檢查 violation 是否使用過這個 content
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM violation WHERE content = ?");
-    $stmt->execute([$rule['content']]);
+    // 檢查 violation 是否使用過
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM violation WHERE article_no = ?"
+    );
+    $stmt->execute([$rule['article_no']]);
     $used = (int)$stmt->fetchColumn();
 
     if ($used > 0) {
@@ -95,15 +110,20 @@ if (isset($_GET['delete'])) {
         exit;
     }
 
-    // 未被使用才可刪
-    $stmt = $pdo->prepare("DELETE FROM rules WHERE id = ?");
+    // 可刪除
+    $stmt = $pdo->prepare("DELETE FROM penalty WHERE id = ?");
     $stmt->execute([$id]);
+
     header("Location: " . BASE_URL . "/rules.php?msg=deleted");
     exit;
 }
 
-// ===== 撈規則列表 =====
-$stmt  = $pdo->query("SELECT id, content, points FROM rules ORDER BY id ASC");
+// =======================
+// 撈 penalty 清單
+// =======================
+$stmt  = $pdo->query(
+    "SELECT id, article_no, content, points FROM penalty ORDER BY id ASC"
+);
 $rules = $stmt->fetchAll();
 
 include __DIR__ . '/includes/header.php';
@@ -138,7 +158,15 @@ include __DIR__ . '/includes/navbar.php';
             <form method="post" class="row g-2">
                 <input type="hidden" name="action" value="create">
 
-                <div class="col-md-8">
+                <div class="col-md-3">
+                    <input type="text"
+                           name="article_no"
+                           class="form-control"
+                           placeholder="條例（例：第十一條）"
+                           value="<?= h($formArticle) ?>">
+                </div>
+
+                <div class="col-md-6">
                     <input type="text"
                            name="content"
                            class="form-control"
@@ -146,12 +174,12 @@ include __DIR__ . '/includes/navbar.php';
                            value="<?= h($formContent) ?>">
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <input type="number"
                            name="points"
                            class="form-control"
-                           placeholder="扣點"
                            min="1"
+                           placeholder="點數"
                            value="<?= h((string)$formPoints) ?>">
                 </div>
 
@@ -163,62 +191,58 @@ include __DIR__ . '/includes/navbar.php';
     </div>
 
     <!-- 規則列表 -->
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle">
-            <thead class="table-dark">
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>條例</th>
+            <th>規則內容</th>
+            <th>扣點</th>
+            <th style="width:200px;">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php if (empty($rules)): ?>
             <tr>
-                <th style="width:70px;">ID</th>
-                <th>規則內容</th>
-                <th style="width:120px;">扣點</th>
-                <th style="width:220px;">操作</th>
+                <td colspan="5" class="text-center text-muted py-4">目前沒有規則</td>
             </tr>
-            </thead>
-            <tbody>
-            <?php if (empty($rules)): ?>
+        <?php else: ?>
+            <?php foreach ($rules as $r): ?>
                 <tr>
-                    <td colspan="4" class="text-center text-muted py-4">目前沒有規則</td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($rules as $r): ?>
-                    <tr>
+                    <form method="post">
                         <td><?= (int)$r['id'] ?></td>
 
                         <td>
-                            <form method="post" class="d-flex gap-2">
-                                <input type="hidden" name="action" value="update">
-                                <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
-
-                                <input type="text"
-                                       name="content"
-                                       class="form-control"
-                                       value="<?= h($r['content']) ?>">
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                            <input type="text" name="article_no" class="form-control"
+                                   value="<?= h($r['article_no']) ?>">
                         </td>
 
                         <td>
-                                <input type="number"
-                                       name="points"
-                                       class="form-control"
-                                       min="1"
-                                       value="<?= (int)$r['points'] ?>">
+                            <input type="text" name="content" class="form-control"
+                                   value="<?= h($r['content']) ?>">
                         </td>
 
                         <td>
-                                <button class="btn btn-sm btn-warning me-1">更新</button>
-
-                                <a class="btn btn-sm btn-outline-danger"
-                                   href="<?= BASE_URL ?>/rules.php?delete=<?= (int)$r['id'] ?>"
-                                   onclick="return confirm('確定要刪除此規則？（若已被使用會禁止刪除）');">
-                                    刪除
-                                </a>
-                            </form>
+                            <input type="number" name="points" class="form-control"
+                                   min="1" value="<?= (int)$r['points'] ?>">
                         </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
 
+                        <td>
+                            <button class="btn btn-sm btn-warning me-1">更新</button>
+                            <a class="btn btn-sm btn-outline-danger"
+                               href="<?= BASE_URL ?>/rules.php?delete=<?= (int)$r['id'] ?>"
+                               onclick="return confirm('確定要刪除此規則？');">
+                                刪除
+                            </a>
+                        </td>
+                    </form>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        </tbody>
+    </table>
 </main>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

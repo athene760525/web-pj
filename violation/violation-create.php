@@ -48,7 +48,7 @@ if ($q !== '') {
 // 2️⃣ 取得 rules 清單
 // =======================
 $rules = [];
-$ruleSql = "SELECT id, content, points FROM rules ORDER BY id ASC";
+$ruleSql = "SELECT id, article_no, content, points FROM penalty ORDER BY id ASC";
 $ruleRes = $conn->query($ruleSql);
 while ($r = $ruleRes->fetch_assoc()) {
     $rules[] = $r;
@@ -68,7 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         // 撈規則
-        $stmt = $conn->prepare("SELECT content, points FROM rules WHERE id = ?");
+        $stmt = $conn->prepare(
+            "SELECT article_no, content, points FROM penalty WHERE id = ?"
+        );
         $stmt->bind_param("i", $rule_id);
         $stmt->execute();
         $rule = $stmt->get_result()->fetch_assoc();
@@ -172,7 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="">請選擇</option>
                     <?php foreach ($rules as $r): ?>
                         <option value="<?= $r['id'] ?>">
-                            <?= h($r['content']) ?>（<?= $r['points'] ?> 點）
+                            <?= h($r['article_no']) ?>｜
+                            <?= h($r['content']) ?>
+                            （<?= $r['points'] ?> 點）
                         </option>
                     <?php endforeach; ?>
                 </select>
